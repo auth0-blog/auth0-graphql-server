@@ -1,6 +1,8 @@
 ## Auth0 GraphQL Server
 
-This server was created with Express and `express-graphql-middleware` and uses a mock MongoDB instance to collect data from. Also, JWTs are used for authentication.
+This GraphQL server was created with Express and `express-graphql-middleware` and uses a mock MongoDB instance to collect data from. Also, Auth0 is used for authentication.
+
+The following article describes step by step how this server has been built: [Build and Secure a GraphQL Server with Node.js](https://auth0.com/blog/build-and-secure-a-graphql-server-with-node-js/).
 
 ### Getting started
 
