@@ -1,5 +1,6 @@
 const express = require('express');
 const graphqlHTTP = require('express-graphql');
+const cors = require('cors')
 const schema = require('./schema');
 const startDatabase = require('./database');
 const expressPlayground = require('graphql-playground-middleware-express')
@@ -54,6 +55,7 @@ const resolvers = {
 const app = express();
 app.use(
   '/graphql',
+  cors(),
   graphqlHTTP(async req => ({
     schema,
     rootValue: resolvers,
