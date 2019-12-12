@@ -1,9 +1,9 @@
-require('dotenv').config();
-const jwt = require('jsonwebtoken');
-const jwksClient = require('jwks-rsa');
+require("dotenv").config();
+const jwt = require("jsonwebtoken");
+const jwksClient = require("jwks-rsa");
 
 const client = jwksClient({
-  jwksUri: `https://${process.env.AUTH0_DOMAIN}/.well-known/jwks.json`,
+  jwksUri: `https://${process.env.AUTH0_DOMAIN}/.well-known/jwks.json`
 });
 
 function getKey(header, callback) {
@@ -15,7 +15,7 @@ function getKey(header, callback) {
 
 async function isTokenValid(token) {
   if (token) {
-    const bearerToken = token.split(' ');
+    const bearerToken = token.split(" ");
 
     const result = new Promise((resolve, reject) => {
       jwt.verify(
@@ -24,7 +24,7 @@ async function isTokenValid(token) {
         {
           audience: process.env.API_IDENTIFIER,
           issuer: `https://${process.env.AUTH0_DOMAIN}/`,
-          algorithms: ['RS256'],
+          algorithms: ["RS256"]
         },
         (error, decoded) => {
           if (error) {
@@ -33,14 +33,14 @@ async function isTokenValid(token) {
           if (decoded) {
             resolve({ decoded });
           }
-        },
+        }
       );
     });
 
     return result;
   }
 
-  return { error: 'No token provided' };
+  return { error: "No token provided" };
 }
 
 module.exports = isTokenValid;
