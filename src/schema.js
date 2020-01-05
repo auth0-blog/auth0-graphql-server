@@ -8,6 +8,7 @@ const schema = buildSchema(`
         description: String
         date: String
         attendants: [Person!]
+        canEdit: Boolean
     }
 
     type Person {
