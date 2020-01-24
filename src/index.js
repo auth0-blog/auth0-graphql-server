@@ -28,18 +28,6 @@ const resolvers = {
 
     return event
   },
-  editEvent: async ({ id, title, description }, context) => {
-    const { db } = await context();
-
-    return db
-      .collection('events')
-      .findOneAndUpdate(
-        { id },
-        { $set: { title, description } },
-        { returnOriginal: false },
-      )
-      .then(resp => resp.value);
-  },
 };
 
 const app = express();

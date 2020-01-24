@@ -21,10 +21,6 @@ const schema = buildSchema(`
         events: [Event!]!
         event(id: Int!): Event!
     }
-
-    type Mutation {
-        editEvent(id: Int!, title: String!, description: String!): Event!
-    }
 `);
 
 module.exports = schema;
