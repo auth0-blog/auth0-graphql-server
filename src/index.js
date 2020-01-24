@@ -31,11 +31,15 @@ const resolvers = {
   event: async ({ id }, context) => {
     const { db, token } = await context();
 
-    const { error } = await isTokenValid(token);
+    const { error, decoded } = await isTokenValid(token);
 
     const event = await db.collection('events').findOne({ id });
 
-    return !error ? event : { ...event, attendants: null };
+    const canEdit = decoded
+      ? decoded.permissions && decoded.permissions.includes('edit:events')
+      : false;
+
+    return { ...event, attendants: !error ? event.attendants : null, canEdit };
   },
   editEvent: async ({ id, title, description }, context) => {
     const { db, token } = await context();
