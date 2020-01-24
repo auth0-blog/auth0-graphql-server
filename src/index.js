@@ -5,50 +5,31 @@ const schema = require('./schema');
 const startDatabase = require('./database');
 const expressPlayground = require('graphql-playground-middleware-express')
   .default;
-const isTokenValid = require('./validate');
 
 // Create a context for holding contextual data
-const context = async req => {
+const context = async () => {
   const db = await startDatabase();
-  const { authorization: token } = req.headers;
-
-  return { db, token };
+  return { db };
 };
 
 // Provide resolver functions for your schema fields
 const resolvers = {
   events: async (_, context) => {
-    const { db, token } = await context();
-
-    const { error } = await isTokenValid(token);
+    const { db } = await context();
 
     const events = db.collection('events').find();
 
-    return !error
-      ? events.toArray()
-      : events.project({ attendants: null }).toArray();
+    return events.toArray();
   },
   event: async ({ id }, context) => {
-    const { db, token } = await context();
-
-    const { error, decoded } = await isTokenValid(token);
+    const { db } = await context();
 
     const event = await db.collection('events').findOne({ id });
 
-    const canEdit = decoded
-      ? decoded.permissions && decoded.permissions.includes('edit:events')
-      : false;
-
-    return { ...event, attendants: !error ? event.attendants : null, canEdit };
+    return event
   },
   editEvent: async ({ id, title, description }, context) => {
-    const { db, token } = await context();
-
-    const { error } = await isTokenValid(token);
-
-    if (error) {
-      throw new Error(error);
-    }
+    const { db } = await context();
 
     return db
       .collection('events')
@@ -65,10 +46,10 @@ const app = express();
 app.use(
   '/graphql',
   cors(),
-  graphqlHTTP(async req => ({
+  graphqlHTTP(async () => ({
     schema,
     rootValue: resolvers,
-    context: () => context(req),
+    context,
   })),
 );
 app.get('/playground', expressPlayground({ endpoint: '/graphql' }));
